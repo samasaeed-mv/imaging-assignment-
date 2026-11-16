@@ -33,5 +33,8 @@ Bold = the better method, used in the app. Every file, folder, figure and failed
 2. Open the folder in VS Code (Python + Jupyter extensions), kernel = your Python.
 3. For each member, open and **Run All** in this order: `phase1/02_enhancement_<name>` -> `phase2/03_segmentation_<name>` -> `phase3/04_classification_<name>`.
    (`01_slicing_<name>` only if the slices need to be made again; it needs the `.nii.gz` files.)
-4. Run `report/05_report_figures.ipynb` for the block diagrams and the group results table.
-5. Prototype: `streamlit run app/app.py`, pick a member and a slice. RED = predicted outline, GREEN = ground truth.
+4. Run `report/05_report_figures.ipynb` for the block diagrams, the group results table and the Wilcoxon comparison.
+5. End-to-end check (raw CT -> final tumour mask, incl. the tumour-free slices in `data/slices/<name>_healthy`): `python evaluate_end_to_end.py`
+6. Prototype: `streamlit run app/app.py`, pick a member and one slice or a group of slices. RED = predicted outline, GREEN = ground truth.
+
+Steps 3-5 in one go, on any OS: `python run_all.py` (add `--slicing` to re-make the slices first; Windows: double-click `run_all_notebooks.bat`).
