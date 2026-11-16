@@ -90,15 +90,17 @@ def region_grow(img, seed, tolerance, allowed=None):
 def region_features(ct, enh, mask):
     return {**shape_features(mask), **glcm_features(enh, mask), **first_order_features(ct, mask)}
 
-def classify_regions(ct, enh, candidates, bundle, min_area=MIN_AREA):
-    """Run a trained classifier on every candidate blob; return the blobs it calls tumour + how many were checked."""
+def classify_regions(ct, enh, candidates, bundle, min_area=MIN_AREA, features=None):
+    """Run a trained classifier on every candidate blob; return the blobs it calls tumour + how many were checked.
+    `features` = the member's own feature function (default: shape + GLCM + first-order)."""
+    features = features or region_features
     model, names = bundle["model"], bundle["feature_names"]
     out, checked = np.zeros(candidates.shape, bool), 0
     for r in regionprops(label(candidates)):
         if r.area < min_area:
             continue
         m = np.zeros(candidates.shape, bool); m[tuple(r.coords.T)] = True
-        f = region_features(ct, enh, m)
+        f = features(ct, enh, m)
         checked += 1
         if model.predict(np.array([[f[n] for n in names]]))[0] == 1:
             out |= m

@@ -1,5 +1,5 @@
-member,organ,patient,best Phase 1 tumour CNR,Phase 2 method A,Dice A,Phase 2 method B,Dice B,IoU (best),classifier,tuned (grouped 5-fold CV),CV F1 (mean +/- std),accuracy,accuracy 95% CI,sensitivity,specificity,F1,F1 95% CI
-charvi,liver,1,1.92,Adaptive threshold,0.756,Seeded region growing,0.88,0.827,k-NN,k = 5,0.742 +/- 0.071,0.704,"[0.62, 0.80]",0.778,0.667,0.636,"[0.40, 0.80]"
-sama,liver,0,1.35,Multi-Otsu,0.797,Marker watershed,0.913,0.849,SVM (RBF),C = 100,0.668 +/- 0.216,0.955,"[0.88, 1.00]",0.833,1.0,0.909,"[0.67, 1.00]"
-kritikaa,tumour,22,2.41,Multi-Otsu,0.651,Region growing,0.678,0.582,Random forest,max depth = 3,0.760 +/- 0.388,0.938,"[0.81, 1.00]",1.0,0.917,0.889,"[0.73, 1.00]"
-evangeline,tumour,29,0.8,Adaptive threshold,0.585,Marker watershed,0.6,0.472,Decision tree,max depth = 3,0.952 +/- 0.040,0.806,"[0.74, 1.00]",0.8,0.81,0.774,"[0.00, 0.80]"
+member,organ,patient,best Phase 1 tumour CNR,Phase 2 method A,Phase 2 method B,Phase 2 method C,Dice A,Dice B,Dice C,final method,Dice (final),IoU (final),"tumour Dice, predicted liver",classifier,tuned (grouped 5-fold CV),CV F1 (mean +/- std),accuracy,accuracy 95% CI,sensitivity,specificity,F1,F1 95% CI
+charvi,liver,1,1.92,Adaptive threshold,Seeded region growing,,0.756,0.88,,regiongrow,0.88,0.827,,k-NN,k = 5,0.742 +/- 0.071,0.704,"[0.62, 0.80]",0.778,0.667,0.636,"[0.40, 0.80]"
+sama,liver,0,1.35,Multi-Otsu,Marker watershed,,0.797,0.913,,watershed,0.913,0.849,,SVM (RBF),C = 100,0.668 +/- 0.216,0.955,"[0.88, 1.00]",0.833,1.0,0.909,"[0.67, 1.00]"
+kritikaa,tumour,22,2.52,Niblack,Statistical region growing,Geodesic active contour,0.594,0.648,0.707,gac,0.707,0.597,0.219,Random forest,max depth = 3,1.000 +/- 0.000,1.0,"[1.00, 1.00]",1.0,1.0,1.0,"[1.00, 1.00]"
+evangeline,tumour,29,0.8,Adaptive threshold,Marker watershed,,0.585,0.6,,watershed,0.6,0.472,,Decision tree,max depth = 3,0.952 +/- 0.040,0.806,"[0.74, 1.00]",0.8,0.81,0.774,"[0.00, 0.80]"
