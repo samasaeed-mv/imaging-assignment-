@@ -1,6 +1,6 @@
 # Phase 3 failed cases: kritikaa
 
-Test set: 15 regions, **1 misclassified**.
+Test set: 16 regions, **1 misclassified**.
 
 | Slice | True | Predicted | Area (px) | Mean HU | Likely reason |
 |---|---|---|---|---|---|

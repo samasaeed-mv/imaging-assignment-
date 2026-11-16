@@ -1,2 +1,2 @@
-accuracy,sensitivity (recall),specificity,F1
-0.8648648648648649,0.7647058823529411,0.95,0.8387096774193549
+accuracy,sensitivity (recall),specificity,F1,tuned max depth,group block (slices),CV accuracy mean,CV accuracy std,CV F1 mean,CV F1 std,accuracy CI low,accuracy CI high,sensitivity (recall) CI low,sensitivity (recall) CI high,specificity CI low,specificity CI high,F1 CI low,F1 CI high
+0.8055555555555556,0.8,0.8095238095238095,0.7741935483870968,3,3,0.9482655502392344,0.0444269709965552,0.9518181818181818,0.04011461998393434,0.7368421052631579,1.0,0.8,0.8,0.6666666666666666,1.0,0.0,0.8
