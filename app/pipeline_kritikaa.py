@@ -15,6 +15,9 @@ ALGORITHMS = ("Liver window 80/200 -> non-local means + CLAHE | Tumour: Niblack 
 PHASE2_METRICS = ("phase2/outputs_kritikaa/phase2_metrics.csv", "gac")
 PHASE3_METRICS = "phase3/outputs_kritikaa/phase3_metrics.csv"
 MODEL = "phase3/outputs_kritikaa/rf_model.joblib"
+# end-to-end search area used by default in the app: the better of the two automatic ones in Phase 2
+# (tumour Dice: predicted liver 0.537, convex hull of predicted liver 0.546)
+DEFAULT_LIVER_SOURCE = "convex hull of predicted liver"
 
 # hand-made plus structuring elements (same as the Phase 2 notebook)
 SE_PLUS_5 = np.zeros((5, 5), np.uint8); SE_PLUS_5[2, :] = 1; SE_PLUS_5[:, 2] = 1; SE_PLUS_5[1:4, 1:4] = 1
@@ -79,11 +82,11 @@ def region_features(ct, enh, mask):
     return {**C.region_features(ct, enh, mask), **border_features(ct, enh, mask)}
 
 
-def run(ct, root, gt_liver=None, liver_source="ground truth"):
+def run(ct, root, gt_liver=None, liver_source=DEFAULT_LIVER_SOURCE):
     bundle = joblib.load(root / MODEL)
     win = C.window(ct, 80, 200)
     enh = enhance(win)
-    liver = gt_liver if (liver_source == "ground truth" and gt_liver is not None) else pipeline_charvi.predicted_liver(ct)
+    liver = pipeline_charvi.search_area(ct, gt_liver, liver_source)
     tumour, checked = C.classify_regions(ct, enh, segment_tumour(enh, liver), bundle, features=region_features)
     return {"win": win, "enh": enh, "liver": liver, "tumour": tumour,
             "note": f"{checked} segmented blobs checked by the random forest, {label(tumour).max()} confirmed as tumour"}

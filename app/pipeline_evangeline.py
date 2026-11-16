@@ -1,20 +1,24 @@
-"""evangeline (TUMOUR, patient 29): narrow window 90/150 -> guided filter (r 8, eps 0.05) -> Chan-Vese inside the
-liver (tumour) -> decision tree on SLIC superpixels (diagnosis), shape + GLCM + first-order + Laws texture energy."""
+"""evangeline (TUMOUR, patient 29): narrow window 90/150 -> guided filter (r 8, eps 0.05) -> Sauvola threshold inside
+the liver (tumour) -> decision tree on SLIC superpixels (diagnosis), shape + GLCM + first-order + Laws texture energy."""
 import numpy as np
 import cv2
 import joblib
 from scipy import ndimage as ndi
-from skimage.segmentation import morphological_chan_vese, slic
+from skimage.filters import threshold_sauvola
+from skimage.segmentation import slic
 from skimage.measure import regionprops, label
 import common as C
 import pipeline_charvi
 
 NAME, ORGAN, PATIENT = "evangeline", "tumour", 29
-ALGORITHMS = ("Window 90/150 -> guided filter | Tumour: Sauvola vs marker watershed (distance-transform markers) vs "
-              "Chan-Vese (used) | Diagnosis: decision tree on SLIC superpixels")
-PHASE2_METRICS = ("phase2/outputs_evangeline/phase2_metrics.csv", "chanvese")
+ALGORITHMS = ("Window 90/150 -> guided filter | Tumour: Sauvola (used) vs marker watershed (distance-transform markers) vs "
+              "Chan-Vese | Diagnosis: decision tree on SLIC superpixels")
+PHASE2_METRICS = ("phase2/outputs_evangeline/phase2_metrics.csv", "sauvola")
 PHASE3_METRICS = "phase3/outputs_evangeline/phase3_metrics.csv"
 MODEL = "phase3/outputs_evangeline/tree_model.joblib"
+# end-to-end search area used by default in the app: the better of the two automatic ones in Phase 2
+# (tumour Dice: predicted liver 0.199, convex hull of predicted liver 0.178)
+DEFAULT_LIVER_SOURCE = "predicted liver"
 
 
 def hexagon(n):
@@ -28,7 +32,7 @@ def hexagon(n):
 
 
 SE_HEX_5, SE_HEX_9 = hexagon(5), hexagon(9)
-CV_ITERATIONS, CV_START_K = 50, 0.75
+SAUVOLA_WINDOW, SAUVOLA_K, SAUVOLA_R = 101, 0.1, 128
 L5, E5, S5, R5 = [1, 4, 6, 4, 1], [-1, -2, 0, 2, 1], [-1, 0, 2, 0, -1], [1, -4, 6, -4, 1]
 LAWS_PAIRS = {"L5E5": (L5, E5), "L5S5": (L5, S5), "E5E5": (E5, E5), "S5S5": (S5, S5), "R5R5": (R5, R5)}
 
@@ -60,25 +64,14 @@ def clean(mask, min_area=30):
 
 
 def segment_tumour(enh, liver):
-    """Chan-Vese inside the liver's bounding box, started from the dark candidate area; keep the darker region."""
+    """Sauvola local threshold inside the liver: T = m x (1 + k x (s / R - 1)); pixels darker than T are tumour."""
     roi = liver_roi(liver)
     if roi.sum() < 50:
         return np.zeros(enh.shape, bool)
-    smooth = cv2.GaussianBlur(enh, (5, 5), 0).astype(float) / 255
-    ys, xs = np.nonzero(roi)
-    y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
-    crop, inside = smooth[y0:y1, x0:x1].copy(), roi[y0:y1, x0:x1]
-    med = np.median(crop[inside])
-    crop[~inside] = med
-    start = (crop < med - CV_START_K * crop[inside].std()) & inside
-    if not start.any():
-        return np.zeros(enh.shape, bool)
-    level_set = morphological_chan_vese(crop, num_iter=CV_ITERATIONS, init_level_set=start.astype(np.int8),
-                                        smoothing=1, lambda1=1, lambda2=1).astype(bool)
-    if (level_set & inside).any() and (~level_set & inside).any() and crop[level_set & inside].mean() > crop[~level_set & inside].mean():
-        level_set = ~level_set
-    out = np.zeros(enh.shape, bool); out[y0:y1, x0:x1] = level_set & inside
-    return clean(out)
+    smooth = cv2.GaussianBlur(enh, (5, 5), 0).astype(float)
+    filled = smooth.copy(); filled[~roi] = np.median(smooth[roi])          # outside the liver = liver median
+    T = threshold_sauvola(filled, window_size=SAUVOLA_WINDOW, k=SAUVOLA_K, r=SAUVOLA_R)
+    return clean((smooth < T) & roi)
 
 
 def laws_features(enh, mask):
@@ -117,11 +110,11 @@ def diagnose(ct, enh, liver, bundle):
     return checked, flagged, flagged_area
 
 
-def run(ct, root, gt_liver=None, liver_source="ground truth"):
+def run(ct, root, gt_liver=None, liver_source=DEFAULT_LIVER_SOURCE):
     bundle = joblib.load(root / MODEL)
     win = C.window(ct, 90, 150)
     enh = enhance(win)
-    liver = gt_liver if (liver_source == "ground truth" and gt_liver is not None) else pipeline_charvi.predicted_liver(ct)
+    liver = pipeline_charvi.search_area(ct, gt_liver, liver_source)
     segmented = segment_tumour(enh, liver)
     checked, flagged, flagged_area = diagnose(ct, enh, liver, bundle)
     # keep only the segmented tumour blobs that touch a superpixel the decision tree called tumour

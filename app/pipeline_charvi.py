@@ -5,6 +5,7 @@ import cv2
 import joblib
 from scipy import ndimage as ndi
 from skimage.measure import label
+from skimage.morphology import convex_hull_image
 import common as C
 
 NAME, ORGAN, PATIENT = "charvi", "liver", 1
@@ -85,6 +86,18 @@ def segment_liver(enh):
 def predicted_liver(ct):
     """Used by the tumour members when they search inside a predicted (not ground-truth) liver."""
     return segment_liver(enhance(C.window(ct, 40, 400)))
+
+
+LIVER_SOURCES = ["ground truth", "predicted liver", "convex hull of predicted liver"]
+
+
+def search_area(ct, gt_liver, source):
+    """Where the tumour members look for the tumour: the ground-truth liver, the predicted liver, or the convex hull
+    of the predicted liver (the hull also covers a dark tumour that bites into the liver edge)."""
+    if source == "ground truth" and gt_liver is not None:
+        return gt_liver
+    liver = predicted_liver(ct)
+    return convex_hull_image(liver) if (source == "convex hull of predicted liver" and liver.any()) else liver
 
 
 def run(ct, root, gt_liver=None, liver_source="own"):

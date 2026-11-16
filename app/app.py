@@ -31,8 +31,12 @@ st.sidebar.caption(f"**{M.ORGAN.upper()} member, patient {M.PATIENT}**  \n{M.ALG
 
 liver_source = "own"
 if M.ORGAN == "tumour":
-    liver_source = st.sidebar.radio("Liver used to search for the tumour",
-                                    ["ground truth", "predicted (charvi region growing)"])
+    import pipeline_charvi                # owns the predicted liver and the search-area options
+    sources = pipeline_charvi.LIVER_SOURCES
+    liver_source = st.sidebar.radio("Liver used to search for the tumour", sources,
+                                    index=sources.index(M.DEFAULT_LIVER_SOURCE))
+    st.sidebar.caption(f"Default for {member}: **{M.DEFAULT_LIVER_SOURCE}** (charvi's region growing), the better of "
+                       "the two automatic search areas in Phase 2. 'ground truth' = upper bound with a perfect liver.")
 
 st.sidebar.header("2. Choose a CT slice")
 source = st.sidebar.radio("Source", ["Saved slices", "Upload a slice"])
@@ -74,7 +78,8 @@ st.subheader("Phase 2 and 3: segmentation and diagnosis")
 diagnosis = "TUMOUR DETECTED" if R["tumour"].any() else "No tumour detected"
 st.markdown(f"**Diagnosis for this slice: {diagnosis}**  ({R['note']})")
 
-liver_label = "Predicted liver" if (M.ORGAN == "liver" or liver_source != "ground truth") else "Liver (ground truth, used as search area)"
+liver_label = {"ground truth": "Liver (ground truth, used as search area)",
+               "convex hull of predicted liver": "Convex hull of the predicted liver (search area)"}.get(liver_source, "Predicted liver")
 tab_liver, tab_tumour, tab_all = st.tabs(["Liver", "Tumour", "All organs together"])
 with tab_liver:
     a, b = st.columns([2, 1])
