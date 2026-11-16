@@ -1,0 +1,5 @@
+member,organ,patient,best Phase 1 tumour CNR,Phase 2 method A,Dice A,Phase 2 method B,Dice B,IoU (best),classifier,accuracy,sensitivity,specificity,F1
+charvi,liver,1,1.92,Adaptive threshold,0.756,Seeded region growing,0.88,0.827,k-NN (k=5),0.926,0.818,1.0,0.9
+sama,liver,0,1.35,Multi-Otsu,0.797,Marker watershed,0.913,0.849,SVM (RBF),0.905,0.714,1.0,0.833
+kritikaa,tumour,22,2.41,Multi-Otsu,0.651,Region growing,0.678,0.582,Random forest,0.933,1.0,0.909,0.889
+evangeline,tumour,29,0.8,Adaptive threshold,0.585,Marker watershed,0.6,0.472,Decision tree,0.865,0.765,0.95,0.839

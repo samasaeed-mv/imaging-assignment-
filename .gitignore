@@ -1,0 +1,16 @@
+# Raw LiTS volumes are too large for GitHub (>100 MB per file); download them per SETUP.md
+data/raw_volumes/
+*.nii
+*.nii.gz
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
