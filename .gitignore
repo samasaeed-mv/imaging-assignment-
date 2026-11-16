@@ -1,7 +1,5 @@
-# Raw LiTS volumes are too large for GitHub (>100 MB per file); download them per SETUP.md
-data/raw_volumes/
+# Uncompressed LiTS volumes are too large for GitHub (>100 MB); the gzipped .nii.gz copies are committed instead
 *.nii
-*.nii.gz
 
 # Python / Jupyter
 __pycache__/

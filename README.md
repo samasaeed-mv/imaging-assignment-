@@ -18,7 +18,7 @@ Bold = the better method, used in the app. Every file, folder, figure and failed
 
 | Folder | What is in it |
 |---|---|
-| `data/raw_volumes/` | LiTS `volume-N.nii` + `segmentation-N.nii` |
+| `data/raw_volumes/` | LiTS `volume-N.nii.gz` + `segmentation-N.nii.gz` (gzipped originals) |
 | `data/slices/<name>/` | each member's 2D test slices: `*_ct.npy` (raw HU), `*_liver.png`, `*_tumour.png` |
 | `data/data_log.csv` | which patient and slices each member used |
 | `phase1/` | `01_slicing_<name>`, `02_enhancement_<name>` notebooks + `outputs_<name>/` (enhanced slices, PSNR/CNR table) |
@@ -32,6 +32,6 @@ Bold = the better method, used in the app. Every file, folder, figure and failed
 1. Install Python 3.10+, then in this folder: `pip install -r requirements.txt`
 2. Open the folder in VS Code (Python + Jupyter extensions), kernel = your Python.
 3. For each member, open and **Run All** in this order: `phase1/02_enhancement_<name>` -> `phase2/03_segmentation_<name>` -> `phase3/04_classification_<name>`.
-   (`01_slicing_<name>` only if the slices need to be made again; it needs the `.nii` files.)
+   (`01_slicing_<name>` only if the slices need to be made again; it needs the `.nii.gz` files.)
 4. Run `report/05_report_figures.ipynb` for the block diagrams and the group results table.
 5. Prototype: `streamlit run app/app.py`, pick a member and a slice. RED = predicted outline, GREEN = ground truth.
