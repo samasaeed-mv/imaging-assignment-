@@ -3,3 +3,7 @@ sama,0,"46,56-62,65-72",liver,all slices = segmentation test set; "phase 3 = 70/
 charvi,1,56-73,liver,all slices = segmentation test set; "phase 3 = 70/30 split grouped by slice, grouped 5-fold CV on the 70% only"
 kritikaa,22,126-137,tumour,all slices = segmentation test set; "phase 3 = 70/30 split grouped by slice, grouped 5-fold CV on the 70% only"
 evangeline,29,56-77,tumour,all slices = segmentation test set; "phase 3 = 70/30 split grouped by slice, grouped 5-fold CV on the 70% only"
+sama,0,49-53,liver (tumour-free),end-to-end healthy test,"data/slices/sama_healthy: liver >= 3000 px, >= 3 slices from any tumour"
+charvi,1,48-53,liver (tumour-free),end-to-end healthy test,"data/slices/charvi_healthy: liver >= 3000 px, >= 3 slices from any tumour"
+kritikaa,22,"112,115,119,122,142,145",liver (tumour-free),end-to-end healthy test,"data/slices/kritikaa_healthy: liver >= 3000 px, >= 3 slices from any tumour"
+evangeline,29,"80,95,110,125,140,155",liver (tumour-free),end-to-end healthy test,"data/slices/evangeline_healthy: liver >= 3000 px, >= 3 slices from any tumour"
