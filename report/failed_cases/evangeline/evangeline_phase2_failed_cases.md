@@ -1,16 +1,16 @@
 # Phase 2 failed cases: evangeline (tumour segmentation)
 
-Best method: **sauvola** (mean Dice 0.638). Slices with Dice < 0.7: 8 of 22.
+Final method: **sauvola** (mean Dice 0.638). Slices with Dice < 0.7: 8 of 22.
 
-| Slice | Dice (sauvola) | Ground-truth pixels | Predicted pixels | Likely reason |
+| Slice | Dice (sauvola) | Ground-truth pixels | Predicted pixels | Measured reasons |
 |---|---|---|---|---|
-| p29_s56 | 0.000 | 75 | 0 | missed completely: nothing was segmented |
-| p29_s77 | 0.202 | 80 | 256 | very small tumour on this slice (80 pixels), near the top or bottom of the organ |
-| p29_s76 | 0.333 | 172 | 416 | very small tumour on this slice (172 pixels), near the top or bottom of the organ |
-| p29_s57 | 0.368 | 178 | 192 | very small tumour on this slice (178 pixels), near the top or bottom of the organ |
-| p29_s58 | 0.505 | 261 | 294 | very small tumour on this slice (261 pixels), near the top or bottom of the organ |
-| p29_s74 | 0.556 | 745 | 525 | boundary mismatch: right place, but the outline differs from the ground truth |
-| p29_s75 | 0.561 | 363 | 357 | boundary mismatch: right place, but the outline differs from the ground truth |
-| p29_s59 | 0.672 | 429 | 279 | boundary mismatch: right place, but the outline differs from the ground truth |
+| p29_s56 | 0.000 | 75 | 0 | small tumour (75 px): partial-volume effect, its edge HU blends into the liver; tumour 26 HU darker than liver, liver noise 32 HU (contrast/noise 0.81, LOW); 84% of the tumour lies in the liver rim that is left out of the search area; step that failed: clean-up after Sauvola threshold removed everything it found on the tumour |
+| p29_s77 | 0.202 | 80 | 256 | small tumour (80 px): partial-volume effect, its edge HU blends into the liver; tumour 25 HU darker than liver, liver noise 29 HU (contrast/noise 0.87, LOW); 40% of the tumour lies in the liver rim that is left out of the search area; step that failed: the Sauvola threshold leaked 222 px into tissue of 88 HU (tumour 74 HU, neighbours 99 HU): similar HU, no edge to stop at |
+| p29_s76 | 0.333 | 172 | 416 | small tumour (172 px): partial-volume effect, its edge HU blends into the liver; tumour 15 HU darker than liver, liver noise 28 HU (contrast/noise 0.54, LOW); 22% of the tumour lies in the liver rim that is left out of the search area; step that failed: the Sauvola threshold leaked 318 px into tissue of 94 HU (tumour 85 HU, neighbours 100 HU): similar HU, no edge to stop at |
+| p29_s57 | 0.368 | 178 | 192 | small tumour (178 px): partial-volume effect, its edge HU blends into the liver; tumour 17 HU darker than liver, liver noise 32 HU (contrast/noise 0.53, LOW); 59% of the tumour lies in the liver rim that is left out of the search area; step that failed: the Sauvola threshold leaked 124 px into tissue of 84 HU (tumour 79 HU, neighbours 96 HU): similar HU, no edge to stop at |
+| p29_s58 | 0.505 | 261 | 294 | small tumour (261 px): partial-volume effect, its edge HU blends into the liver; tumour 17 HU darker than liver, liver noise 32 HU (contrast/noise 0.53, LOW); 45% of the tumour lies in the liver rim that is left out of the search area; step that failed: the Sauvola threshold leaked 154 px into tissue of 82 HU (tumour 80 HU, neighbours 97 HU): similar HU, no edge to stop at |
+| p29_s74 | 0.556 | 745 | 525 | tumour 13 HU darker than liver, liver noise 28 HU (contrast/noise 0.47, LOW); step that failed: the Sauvola threshold stopped early, missed 392 px of 93 HU (found part 82 HU) |
+| p29_s75 | 0.561 | 363 | 357 | tumour 17 HU darker than liver, liver noise 27 HU (contrast/noise 0.64, LOW); step that failed: the Sauvola threshold stopped early, missed 161 px of 85 HU (found part 82 HU) |
+| p29_s59 | 0.672 | 429 | 279 | tumour 20 HU darker than liver, liver noise 29 HU (contrast/noise 0.69, LOW); 44% of the tumour lies in the liver rim that is left out of the search area; step that failed: the Sauvola threshold stopped early, missed 191 px of 74 HU (found part 81 HU) |
 
-Overlay images of the 3 worst slices are saved next to this file (red = predicted, green = ground truth).
+Diagnosis figures (overlay + HU histograms of truth, surroundings, missed and leaked pixels) for the 3 worst slices are saved next to this file.
