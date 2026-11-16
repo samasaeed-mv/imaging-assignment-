@@ -2,4 +2,4 @@ member,organ,patient,best Phase 1 tumour CNR,Phase 2 method A,Phase 2 method B,P
 charvi,liver,1,1.92,Adaptive threshold,Seeded region growing,,0.756,0.886,,regiongrow,0.886,0.836,,k-NN,k = 1,0.750 +/- 0.129,0.731,"[0.57, 0.80]",0.9,0.625,0.72,"[0.57, 0.83]"
 sama,liver,0,1.35,Multi-Otsu,Marker watershed,,0.797,0.913,,watershed,0.913,0.849,,SVM (RBF),C = 100,0.668 +/- 0.216,0.955,"[0.88, 1.00]",0.833,1.0,0.909,"[0.67, 1.00]"
 kritikaa,tumour,22,2.52,Niblack,Statistical region growing,Geodesic active contour,0.594,0.648,0.707,gac,0.707,0.597,0.537,Random forest,max depth = 3,0.771 +/- 0.390,1.0,"[1.00, 1.00]",1.0,1.0,1.0,"[1.00, 1.00]"
-evangeline,tumour,29,0.8,Adaptive threshold,Marker watershed,,0.585,0.6,,watershed,0.6,0.472,,Decision tree,max depth = 3,0.952 +/- 0.040,0.806,"[0.74, 1.00]",0.8,0.81,0.774,"[0.00, 0.80]"
+evangeline,tumour,29,0.93,Sauvola,Marker watershed (distance-transform markers),Chan-Vese,0.638,0.458,0.608,chanvese,0.608,0.475,0.171,Decision tree,max depth = 2,0.976 +/- 0.030,0.943,"[0.83, 1.00]",0.929,0.952,0.929,"[0.00, 1.00]"
