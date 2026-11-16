@@ -1,0 +1,5 @@
+member,search area / liver,tumour slices,tumour-free slices,slice detection rate (sensitivity),false-alarm slices on tumour-free slices,slice specificity (tumour-free),false-positive blobs per tumour-free slice,end-to-end tumour Dice (mean),liver / search-area Dice (mean)
+charvi,own,18,6,0.8888888888888888,0 / 6,1.0,0.0,0.5001178294233638,0.8924805575692226
+sama,own,16,5,0.5,1 / 5,0.8,0.2,0.25905435124745335,0.9048407991459148
+kritikaa,convex hull of predicted liver,12,6,0.6666666666666666,0 / 6,1.0,0.0,0.5331976058532618,0.8410005981522597
+evangeline,predicted liver,22,6,0.5,4 / 6,0.33333333333333337,1.5,0.2031648679903684,0.783908014341713

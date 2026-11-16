@@ -1,0 +1,92 @@
+member,slice,kind,search area / liver,liver (or search area) Dice,GT tumour inside liver / search area,flagged tumour,predicted tumour blobs,detected (overlaps GT tumour),tumour Dice
+charvi,p1_s56,tumour slice,own,0.8398623904117004,0.0,False,0,False,0.0
+charvi,p1_s57,tumour slice,own,0.9145138366357137,0.5555555555555556,True,2,True,0.18835978835958905
+charvi,p1_s58,tumour slice,own,0.9566202252769269,0.7393509127789046,True,3,True,0.5499296765115683
+charvi,p1_s59,tumour slice,own,0.9590391496058173,0.9425113464447806,True,2,True,0.7259911894266732
+charvi,p1_s60,tumour slice,own,0.9625047025874547,1.0,True,1,True,0.10647482014373169
+charvi,p1_s61,tumour slice,own,0.9576910639215134,1.0,True,1,True,0.6030624263832708
+charvi,p1_s62,tumour slice,own,0.9551977102484308,1.0,True,2,True,0.6831460674149628
+charvi,p1_s63,tumour slice,own,0.9550637497298619,1.0,True,1,True,0.24781341107835597
+charvi,p1_s64,tumour slice,own,0.9714991023339196,1.0,True,1,True,0.7843137254825067
+charvi,p1_s65,tumour slice,own,0.9746787833197731,1.0,True,3,True,0.48791714614443277
+charvi,p1_s66,tumour slice,own,0.9501597059000668,1.0,True,3,True,0.7436363636356876
+charvi,p1_s67,tumour slice,own,0.9721640772280963,1.0,True,1,True,0.674727932284553
+charvi,p1_s68,tumour slice,own,0.9487338734720245,1.0,True,3,True,0.584245076585794
+charvi,p1_s69,tumour slice,own,0.9619944561333039,1.0,True,2,True,0.513418903149926
+charvi,p1_s70,tumour slice,own,0.882814821102651,0.7226890756302521,True,2,True,0.5319634703190275
+charvi,p1_s71,tumour slice,own,0.9119966791199399,1.0,True,3,True,0.8137621540756815
+charvi,p1_s72,tumour slice,own,0.8701383802952292,0.9523809523809523,True,1,True,0.7633587786247887
+charvi,p1_s73,tumour slice,own,0.0,0.0,True,2,False,0.0
+charvi,p1_s48,tumour-free slice,own,0.8676132521973133,,False,0,False,
+charvi,p1_s49,tumour-free slice,own,0.9226985242444726,,False,0,False,
+charvi,p1_s50,tumour-free slice,own,0.9204857813983247,,False,0,False,
+charvi,p1_s51,tumour-free slice,own,0.940353996605474,,False,0,False,
+charvi,p1_s52,tumour-free slice,own,0.8976237905520454,,False,0,False,
+charvi,p1_s53,tumour-free slice,own,0.9260853293412885,,False,0,False,
+sama,p0_s46,tumour slice,own,0.8925193465174349,1.0,False,0,False,0.0
+sama,p0_s56,tumour slice,own,0.8696656219807982,0.9942196531791907,True,1,True,0.6822742474893569
+sama,p0_s57,tumour slice,own,0.8932084011928998,0.5489130434782609,True,1,True,0.16464891041122362
+sama,p0_s58,tumour slice,own,0.8950344481540635,0.9033457249070632,True,3,True,0.7257900101929401
+sama,p0_s59,tumour slice,own,0.9240206900901892,1.0,True,2,True,0.4891518737662936
+sama,p0_s60,tumour slice,own,0.9272292449606963,1.0,True,1,False,0.0
+sama,p0_s61,tumour slice,own,0.9588620112581627,1.0,True,2,True,0.5152354570622847
+sama,p0_s62,tumour slice,own,0.9669421487603161,1.0,True,1,False,0.0
+sama,p0_s65,tumour slice,own,0.9630295763389151,1.0,True,2,False,0.0
+sama,p0_s66,tumour slice,own,0.9590054758028569,1.0,True,1,False,0.0
+sama,p0_s67,tumour slice,own,0.9743339267988944,1.0,False,0,False,0.0
+sama,p0_s68,tumour slice,own,0.9763981968702162,1.0,False,0,False,0.0
+sama,p0_s69,tumour slice,own,0.9693055405551146,1.0,True,2,True,0.3549618320603913
+sama,p0_s70,tumour slice,own,0.9476687316595765,1.0,True,1,False,0.0
+sama,p0_s71,tumour slice,own,0.8231907524850077,1.0,True,1,True,0.7509025270731015
+sama,p0_s72,tumour slice,own,0.6790911411794163,1.0,True,3,True,0.46190476190366214
+sama,p0_s49,tumour-free slice,own,0.8724604281641778,,False,0,False,
+sama,p0_s50,tumour-free slice,own,0.8573503032373427,,False,0,False,
+sama,p0_s51,tumour-free slice,own,0.804776628638419,,True,1,False,
+sama,p0_s52,tumour-free slice,own,0.9304068522483608,,False,0,False,
+sama,p0_s53,tumour-free slice,own,0.917157315171353,,False,0,False,
+kritikaa,p22_s126,tumour slice,convex hull of predicted liver,0.8984295031146464,1.0,False,0,False,0.0
+kritikaa,p22_s127,tumour slice,convex hull of predicted liver,0.9080856541071581,0.8117913832199547,True,1,True,0.4559748427665787
+kritikaa,p22_s128,tumour slice,convex hull of predicted liver,0.8319995948135933,1.0,False,0,False,0.0
+kritikaa,p22_s129,tumour slice,convex hull of predicted liver,0.9140814951518613,0.6956521739130435,True,2,True,0.5054759898900544
+kritikaa,p22_s130,tumour slice,convex hull of predicted liver,0.9174382716049111,0.6597222222222222,False,0,False,0.0
+kritikaa,p22_s131,tumour slice,convex hull of predicted liver,0.9414613056636132,0.9799301919720768,True,1,True,0.9029885057467113
+kritikaa,p22_s132,tumour slice,convex hull of predicted liver,0.9438511690647218,1.0,True,1,True,0.9140529531564505
+kritikaa,p22_s133,tumour slice,convex hull of predicted liver,0.9430848036425458,1.0,True,1,True,0.9522091974747736
+kritikaa,p22_s134,tumour slice,convex hull of predicted liver,0.9381002294682304,1.0,True,1,True,0.951322751322248
+kritikaa,p22_s135,tumour slice,convex hull of predicted liver,0.9145753697855822,1.0,True,1,True,0.8921282798828617
+kritikaa,p22_s136,tumour slice,convex hull of predicted liver,0.9279846427462122,1.0,True,1,True,0.8242187499994634
+kritikaa,p22_s137,tumour slice,convex hull of predicted liver,0.9304520473052419,1.0,False,0,False,0.0
+kritikaa,p22_s112,tumour-free slice,convex hull of predicted liver,0.7029362880885648,,False,0,False,
+kritikaa,p22_s115,tumour-free slice,convex hull of predicted liver,0.8218198863302969,,False,0,False,
+kritikaa,p22_s119,tumour-free slice,convex hull of predicted liver,0.8707471214613076,,False,0,False,
+kritikaa,p22_s122,tumour-free slice,convex hull of predicted liver,0.8181344450234213,,False,0,False,
+kritikaa,p22_s142,tumour-free slice,convex hull of predicted liver,0.9148289393687661,,False,0,False,
+kritikaa,p22_s145,tumour-free slice,convex hull of predicted liver,0.0,,False,0,False,
+evangeline,p29_s56,tumour slice,predicted liver,0.7811400422235112,0.0,False,0,False,0.0
+evangeline,p29_s57,tumour slice,predicted liver,0.7532222571516023,0.0,False,0,False,0.0
+evangeline,p29_s58,tumour slice,predicted liver,0.7366938890451319,0.0,False,0,False,0.0
+evangeline,p29_s59,tumour slice,predicted liver,0.722995193523723,0.0,False,0,False,0.0
+evangeline,p29_s60,tumour slice,predicted liver,0.7117794486213916,0.0,False,0,False,0.0
+evangeline,p29_s61,tumour slice,predicted liver,0.7619240917392405,0.0,False,0,False,0.0
+evangeline,p29_s62,tumour slice,predicted liver,0.7848327669467384,0.0,False,0,False,0.0
+evangeline,p29_s63,tumour slice,predicted liver,0.8115479471926865,0.8887195121951219,True,2,True,0.6564551422314687
+evangeline,p29_s64,tumour slice,predicted liver,0.7236310773702594,0.0,False,0,False,0.0
+evangeline,p29_s65,tumour slice,predicted liver,0.7205159705158598,0.0,False,0,False,0.0
+evangeline,p29_s66,tumour slice,predicted liver,0.7095473703499441,0.9618320610687023,True,3,True,0.06941136440963953
+evangeline,p29_s67,tumour slice,predicted liver,0.7344821196960594,0.9127906976744186,True,1,True,0.28645328160352845
+evangeline,p29_s68,tumour slice,predicted liver,0.25200430776591454,0.8575471698113207,True,2,True,0.003222341568204499
+evangeline,p29_s69,tumour slice,predicted liver,0.8756210078068776,0.9543946932006634,True,1,True,0.5358955765045192
+evangeline,p29_s70,tumour slice,predicted liver,0.8713728886963299,0.9303904923599321,True,1,True,0.5808318264012365
+evangeline,p29_s71,tumour slice,predicted liver,0.8657078819573342,0.8898601398601399,True,1,True,0.609523809523504
+evangeline,p29_s72,tumour slice,predicted liver,0.8407531233502691,0.8926991150442478,True,2,True,0.5630153121315883
+evangeline,p29_s73,tumour slice,predicted liver,0.8628076955388673,0.8710106382978723,True,2,True,0.489767113619979
+evangeline,p29_s74,tumour slice,predicted liver,0.7840637450198635,0.8845637583892617,True,2,True,0.12278308321958946
+evangeline,p29_s75,tumour slice,predicted liver,0.8742505396114099,0.8512396694214877,True,1,True,0.5522682445748476
+evangeline,p29_s76,tumour slice,predicted liver,0.8009783938034406,0.0,True,2,False,0.0
+evangeline,p29_s77,tumour slice,predicted liver,0.8421289018638489,0.0,False,0,False,0.0
+evangeline,p29_s110,tumour-free slice,predicted liver,0.69510143493319,,False,0,False,
+evangeline,p29_s125,tumour-free slice,predicted liver,0.9300695849577896,,True,4,False,
+evangeline,p29_s140,tumour-free slice,predicted liver,0.8987383349112025,,True,1,False,
+evangeline,p29_s155,tumour-free slice,predicted liver,0.8794966164073513,,True,2,False,
+evangeline,p29_s80,tumour-free slice,predicted liver,0.9032672186917707,,False,0,False,
+evangeline,p29_s95,tumour-free slice,predicted liver,0.8207505518763571,,True,2,False,
