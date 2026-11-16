@@ -6,6 +6,7 @@ import joblib
 from scipy import ndimage as ndi
 from skimage.measure import label
 from skimage.morphology import convex_hull_image
+from skimage.feature import local_binary_pattern
 import common as C
 
 NAME, ORGAN, PATIENT = "charvi", "liver", 1
@@ -100,11 +101,22 @@ def search_area(ct, gt_liver, source):
     return convex_hull_image(liver) if (source == "convex hull of predicted liver" and liver.any()) else liver
 
 
+def lbp_features(enh, mask, P=8, R=1):
+    """charvi's own features: normalised histogram of uniform Local Binary Pattern codes inside the region."""
+    codes = local_binary_pattern(enh, P, R, method="uniform")
+    hist = np.bincount(codes[mask].astype(int), minlength=P + 2) / mask.sum()
+    return {f"lbp_{i}": v for i, v in enumerate(hist)}
+
+
+def region_features(ct, enh, mask):
+    return {**C.region_features(ct, enh, mask), **lbp_features(enh, mask)}
+
+
 def run(ct, root, gt_liver=None, liver_source="own"):
     bundle = joblib.load(root / MODEL)
     win = C.window(ct, 40, 400)
     enh = enhance(win)
     liver = segment_liver(enh)
-    tumour, checked = C.classify_regions(ct, enh, C.dark_spots(enh, liver, k=1.5), bundle)
+    tumour, checked = C.classify_regions(ct, enh, C.dark_spots(enh, liver, k=1.5), bundle, features=region_features)
     return {"win": win, "enh": enh, "liver": liver, "tumour": tumour,
             "note": f"{checked} suspicious regions checked by the k-NN, {label(tumour).max()} flagged as tumour"}
