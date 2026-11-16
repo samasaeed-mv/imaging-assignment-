@@ -19,7 +19,7 @@ MODEL = "phase3/outputs_evangeline/tree_model.joblib"
 SE_ELLIPSE_5 = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
 
 def enhance(win):
-    return C.anisotropic_diffusion(win, kappa=60)
+    return pipeline_charvi.anisotropic_diffusion(win, kappa=60)   # temporary: replaced by evangeline's own filter next
 
 def clean(mask, min_area=30):
     mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_OPEN, SE_ELLIPSE_5) > 0

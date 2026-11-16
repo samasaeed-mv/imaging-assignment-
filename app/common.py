@@ -65,28 +65,6 @@ def overlay(img, pairs, thickness=2):
                 cv2.drawContours(rgb, contours, -1, colour, thickness)
     return rgb
 
-def anisotropic_diffusion(img, iterations=15, kappa=30, gamma=0.15):
-    """Perona-Malik diffusion: smooths flat areas but stops at edges."""
-    I = img.astype(np.float64)
-    for _ in range(iterations):
-        diffs = [np.roll(I, -1, 0) - I, np.roll(I, 1, 0) - I, np.roll(I, -1, 1) - I, np.roll(I, 1, 1) - I]
-        I = I + gamma * sum(np.exp(-(d / kappa) ** 2) * d for d in diffs)
-    return np.clip(I, 0, 255).astype(np.uint8)
-
-def region_grow(img, seed, tolerance, allowed=None):
-    """Seeded region growing with a running-average brightness tolerance."""
-    h, w = img.shape
-    region = np.zeros((h, w), bool); region[seed] = True
-    stack, total, count = [seed], float(img[seed]), 1
-    while stack:
-        y, x = stack.pop()
-        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            yy, xx = y + dy, x + dx
-            if 0 <= yy < h and 0 <= xx < w and not region[yy, xx] and (allowed is None or allowed[yy, xx]):
-                if abs(float(img[yy, xx]) - total / count) <= tolerance:
-                    region[yy, xx] = True; stack.append((yy, xx)); total += float(img[yy, xx]); count += 1
-    return region
-
 def region_features(ct, enh, mask):
     return {**shape_features(mask), **glcm_features(enh, mask), **first_order_features(ct, mask)}
 
