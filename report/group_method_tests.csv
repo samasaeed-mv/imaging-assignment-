@@ -1,0 +1,7 @@
+member,organ,final method,compared with,slices,final mean +/- std,other mean +/- std,final better on (slices),Wilcoxon p,significant (p < 0.05)
+charvi,liver,regiongrow,adaptive,18,0.886 +/- 0.224,0.756 +/- 0.204,17,0.0,True
+sama,liver,watershed,multiotsu,16,0.914 +/- 0.077,0.795 +/- 0.224,14,0.0063,True
+kritikaa,tumour,gac,niblack,12,0.707 +/- 0.268,0.594 +/- 0.248,11,0.0015,True
+kritikaa,tumour,gac,regiongrow,12,0.707 +/- 0.268,0.648 +/- 0.288,7,0.1294,False
+evangeline,tumour,sauvola,watershed,22,0.638 +/- 0.227,0.458 +/- 0.342,15,0.0137,True
+evangeline,tumour,sauvola,chanvese,22,0.638 +/- 0.227,0.608 +/- 0.248,14,0.0187,True
