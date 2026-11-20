@@ -21,7 +21,7 @@ MODEL = "phase3/outputs_kritikaa/rf_model.joblib"
 # (tumour Dice: predicted liver 0.537, convex hull of predicted liver 0.546)
 DEFAULT_LIVER_SOURCE = "convex hull of predicted liver"
 
-# Chapter 8: hand-made plus structuring elements (same as the Phase 2 notebook)
+# hand-made plus structuring elements (same as the Phase 2 notebook)
 SE_PLUS_5 = np.zeros((5, 5), np.uint8)
 SE_PLUS_5[2, :] = 1
 SE_PLUS_5[:, 2] = 1
@@ -37,20 +37,20 @@ GAC_SIGMA = 2
 
 
 def enhance(windowed_img):
-    # non-local means (h = 20, extension of Chapter 3), then CLAHE (adaptive extension of Chapter 2.2 HE)
+    # non-local means, then CLAHE
     nlm_img = cv2.fastNlMeansDenoising(windowed_img, None, h=20, templateWindowSize=7, searchWindowSize=21)
     clahe = cv2.createCLAHE(2.0, (8, 8))
     return clahe.apply(nlm_img)
 
 
 def liver_roi(liver_mask):
-    # Chapter 8: erode the liver a little (5x5 square) so its dark border is not mistaken for tumour
+    # erode the liver a little (5x5 square) so its dark border is not mistaken for tumour
     square_5 = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
     return cv2.erode(liver_mask.astype(np.uint8), square_5) > 0
 
 
 def remove_small(mask, min_area=30):
-    # Chapter 8: connected components -> keep the blobs with at least min_area pixels
+    # connected components -> keep the blobs with at least min_area pixels
     lab = label(mask)
     keep = []
     for r in regionprops(lab):
@@ -60,7 +60,7 @@ def remove_small(mask, min_area=30):
 
 
 def tidy(mask):
-    # Chapter 8: opening (plus 5), drop tiny blobs, closing (plus 7), fill holes
+    # opening (plus 5), drop tiny blobs, closing (plus 7), fill holes
     mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_OPEN, SE_PLUS_5) > 0
     mask = remove_small(mask)
     mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_CLOSE, SE_PLUS_7) > 0
@@ -72,16 +72,16 @@ def dark_candidates(enhanced_img, liver_mask):
     roi = liver_roi(liver_mask)
     if roi.sum() < 50:
         return np.zeros(enhanced_img.shape, bool)
-    smooth = cv2.GaussianBlur(enhanced_img, (5, 5), 0)          # Chapter 3: Gaussian smoothing
+    smooth = cv2.GaussianBlur(enhanced_img, (5, 5), 0)   # Gaussian smoothing
     med = np.median(smooth[roi])
     sd = smooth[roi].std()
-    dark = ((smooth < med - K_DARK * sd) & roi).astype(np.uint8)   # Chapter 7: threshold
+    dark = ((smooth < med - K_DARK * sd) & roi).astype(np.uint8)   # threshold
     dark = cv2.morphologyEx(dark, cv2.MORPH_OPEN, SE_PLUS_5) > 0
     return remove_small(dark)
 
 
 def segment_tumour(enhanced_img, liver_mask):
-    # geodesic active contour (extension of Chapter 7, not in the slides):
+    # geodesic active contour
     # grow the dark candidates outwards until the curve meets a strong edge
     start = dark_candidates(enhanced_img, liver_mask)
     if not start.any():
@@ -93,8 +93,8 @@ def segment_tumour(enhanced_img, liver_mask):
 
 
 def border_features(ct, enhanced_img, mask):
-    # kritikaa's own features: how sharp the region's border is (HU step to the surroundings, edge strength)
-    # uses Chapter 8 dilation / erosion and the Chapter 3 Sobel gradient
+    # kritikaa's own features: border sharpness (HU step, edge strength)
+    # uses dilation / erosion and the Sobel gradient
     m8 = mask.astype(np.uint8)
     ring = cv2.dilate(m8, SE_PLUS_7, iterations=2).astype(bool) & ~mask
     edge = mask & ~(cv2.erode(m8, SE_PLUS_5) > 0)
@@ -126,7 +126,7 @@ def run(ct, root, gt_liver=None, liver_source=DEFAULT_LIVER_SOURCE):
     windowed_img = common.window(ct, 80, 200)
     enhanced_img = enhance(windowed_img)
     liver_mask = pipeline_charvi.search_area(ct, gt_liver, liver_source)
-    # every segmented blob is checked by the random forest (extension of Chapter 12-13)
+    # every segmented blob is checked by the random forest
     blobs = segment_tumour(enhanced_img, liver_mask)
     tumour_mask, checked = common.classify_regions(ct, enhanced_img, blobs, bundle, features=region_features)
     result = {}

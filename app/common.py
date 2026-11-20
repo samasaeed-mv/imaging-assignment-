@@ -7,7 +7,7 @@ from skimage.feature import graycomatrix, graycoprops
 
 
 def window(ct, level=40, width=400):
-    # Chapter 2.2 point processing s = T(r): keep the HU window and stretch it to 0-255
+    # point processing s = T(r): keep the HU window and stretch it to 0-255
     low = level - width / 2
     high = level + width / 2
     img = np.clip(ct, low, high)
@@ -16,7 +16,7 @@ def window(ct, level=40, width=400):
 
 
 def keep_liver(mask):
-    # Chapter 8: connected components -> biggest blob on the image's left side (patient's right)
+    # connected components -> biggest blob on the image's left side (patient's right)
     n, labels, stats, centroids = cv2.connectedComponentsWithStats(mask.astype(np.uint8))
     best = 0
     best_area = 0
@@ -36,8 +36,7 @@ ANGLES = [0, np.pi / 4, np.pi / 2, 3 * np.pi / 4]
 
 
 def shape_features(mask):
-    # Chapter 10-11 regional descriptors (area, perimeter, compactness);
-    # circularity, eccentricity and solidity are extensions of them
+    # regional descriptors (area, perimeter, compactness)
     r = regionprops(mask.astype(np.uint8))[0]
     area = r.area
     perim = max(r.perimeter, 1e-6)
@@ -52,7 +51,7 @@ def shape_features(mask):
 
 
 def glcm_features(enhanced_img, mask, levels=32):
-    # Chapter 10-11: GLCM texture inside the region only, averaged over 4 angles
+    # GLCM texture inside the region only, averaged over 4 angles
     r = regionprops(mask.astype(np.uint8))[0]
     r0, c0, r1, c1 = r.bbox
     patch = enhanced_img[r0:r1, c0:c1].astype(int)
@@ -74,7 +73,7 @@ def glcm_features(enhanced_img, mask, levels=32):
 
 
 def first_order_features(ct, mask):
-    # Chapter 10-11: 1st-order statistics (statistical moments) of the HU values
+    # 1st-order statistics (statistical moments) of the HU values
     hu = ct[mask].astype(float)
     feats = {}
     feats["mean_HU"] = hu.mean()
@@ -121,7 +120,7 @@ def region_features(ct, enhanced_img, mask):
 
 
 def classify_regions(ct, enhanced_img, candidates, bundle, min_area=MIN_AREA, features=None):
-    # run a trained classifier on every candidate blob; return the blobs it calls tumour + how many were checked.
+    # classify every candidate blob; return the tumour blobs and how many were checked
     # `features` = the member's own feature function (default: shape + GLCM + first-order)
     if not features:
         features = region_features
@@ -129,7 +128,7 @@ def classify_regions(ct, enhanced_img, candidates, bundle, min_area=MIN_AREA, fe
     names = bundle["feature_names"]
     tumour_mask = np.zeros(candidates.shape, bool)
     checked = 0
-    for r in regionprops(label(candidates)):            # Chapter 8: connected components
+    for r in regionprops(label(candidates)):   # connected components
         if r.area < min_area:
             continue
         m = np.zeros(candidates.shape, bool)
@@ -146,7 +145,7 @@ def classify_regions(ct, enhanced_img, candidates, bundle, min_area=MIN_AREA, fe
 
 def dark_spots(enhanced_img, liver_mask, offset=None, k=None):
     # dark spots inside the liver: darker than median - offset (or median - k x std)
-    # Chapter 8: erode with a 9x9 square to stay away from the liver edge
+    # erode with a 9x9 square to stay away from the liver edge
     square_9 = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 9))
     inner = cv2.erode(liver_mask.astype(np.uint8), square_9) > 0
     if not inner.any():
@@ -155,7 +154,7 @@ def dark_spots(enhanced_img, liver_mask, offset=None, k=None):
         drop = offset
     else:
         drop = k * enhanced_img[inner].std()
-    limit = np.median(enhanced_img[inner]) - drop                  # Chapter 7: threshold
+    limit = np.median(enhanced_img[inner]) - drop   # threshold
     dark = ((enhanced_img < limit) & inner).astype(np.uint8)
     square_3 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-    return cv2.morphologyEx(dark, cv2.MORPH_OPEN, square_3) > 0   # Chapter 8: opening removes specks
+    return cv2.morphologyEx(dark, cv2.MORPH_OPEN, square_3) > 0   # opening removes specks

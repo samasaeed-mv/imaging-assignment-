@@ -20,7 +20,7 @@ MODEL = "phase3/outputs_sama/svm_model.joblib"
 
 
 def diamond(n):
-    # Chapter 8: hand-made diamond structuring element, |row - centre| + |col - centre| <= radius
+    # hand-made diamond structuring element, |row - centre| + |col - centre| <= radius
     c = n // 2
     se = np.zeros((n, n), dtype=np.uint8)
     for r in range(n):
@@ -39,15 +39,15 @@ DARK = 110
 
 
 def enhance(windowed_img):
-    # bilateral filter (extension of Chapter 3), then CLAHE (adaptive extension of Chapter 2.2 HE)
+    # bilateral filter, then CLAHE
     bilateral_img = cv2.bilateralFilter(windowed_img, 9, 40, 9)
     clahe = cv2.createCLAHE(2.0, (8, 8))
     return clahe.apply(bilateral_img)
 
 
 def segment_liver(enhanced_img):
-    # marker-controlled watershed (extension of Chapter 7, not in the slides)
-    # 1. "sure liver" marker: band threshold 150-225 (Chapter 7) + big opening (Chapter 8)
+    # marker-controlled watershed
+    # 1. "sure liver" marker: band threshold 150-225 + big opening
     band = ((enhanced_img >= LIVER_LOW) & (enhanced_img <= LIVER_HIGH)).astype(np.uint8)
     core = common.keep_liver(cv2.morphologyEx(band, cv2.MORPH_OPEN, SE_ELLIPSE_25))
     # 2. "sure background" marker: dark pixels + other bright organs away from the liver core
@@ -59,17 +59,16 @@ def segment_liver(enhanced_img):
     markers = np.zeros(enhanced_img.shape, np.int32)
     markers[dark | other] = 1
     markers[core] = 2
-    # 3. Gaussian smoothing + Sobel edges (Chapter 3), flood from the markers
+    # 3. Gaussian smoothing + Sobel edges, flood from the markers
     blurred = cv2.GaussianBlur(enhanced_img, (5, 5), 0)
     labels = watershed(sobel(blurred / 255.0), markers)
-    # 4. clean up (Chapter 8)
+    # 4. clean up
     mask = cv2.morphologyEx((labels == 2).astype(np.uint8), cv2.MORPH_OPEN, SE_DIAMOND_7) > 0
     return ndi.binary_fill_holes(common.keep_liver(mask))
 
 
 def hu_moment_features(mask):
     # sama's own features: the 7 Hu moment invariants of the region's shape, log-scaled
-    # (extension of the Chapter 10-11 moments, not in the slides)
     hu = cv2.HuMoments(cv2.moments(mask.astype(np.uint8), binaryImage=True)).ravel()
     feats = {}
     for i in range(len(hu)):
@@ -95,7 +94,7 @@ def run(ct, root, gt_liver=None, liver_source="own"):
     windowed_img = common.window(ct, 40, 400)
     enhanced_img = enhance(windowed_img)
     liver_mask = segment_liver(enhanced_img)
-    # tumour candidates: dark spots darker than the liver median - 25, then the SVM (extension of Chapter 12-13)
+    # tumour candidates: dark spots darker than the liver median - 25, then the SVM
     candidates = common.dark_spots(enhanced_img, liver_mask, offset=25)
     tumour_mask, checked = common.classify_regions(ct, enhanced_img, candidates, bundle, features=region_features)
     result = {}

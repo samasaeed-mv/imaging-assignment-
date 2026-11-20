@@ -24,7 +24,7 @@ DEFAULT_LIVER_SOURCE = "predicted liver"
 
 
 def hexagon(n):
-    # Chapter 8: hand-made hexagon structuring element (flat top/bottom, slanted sides)
+    # hand-made hexagon structuring element (flat top/bottom, slanted sides)
     se = np.zeros((n, n), np.uint8)
     c = n // 2
     q = (n + 1) // 4
@@ -54,7 +54,7 @@ LAWS_PAIRS["R5R5"] = (R5, R5)
 
 
 def guided_filter(img, r=8, eps=0.05):
-    # guided filter (He et al., extension of the Chapter 3 average filters) with box filters; the image guides itself
+    # guided filter with box filters; the image guides itself
     size = (2 * r + 1, 2 * r + 1)
     I = img.astype(np.float64) / 255
     mean_I = cv2.boxFilter(I, -1, size)
@@ -71,13 +71,13 @@ def enhance(windowed_img):
 
 
 def liver_roi(liver_mask):
-    # Chapter 8: erode the liver a little (5x5 square) so its dark border is not mistaken for tumour
+    # erode the liver a little (5x5 square) so its dark border is not mistaken for tumour
     square_5 = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
     return cv2.erode(liver_mask.astype(np.uint8), square_5) > 0
 
 
 def clean(mask, min_area=30):
-    # Chapter 8: opening (hexagon 5), drop small blobs, closing (hexagon 9), fill holes
+    # opening (hexagon 5), drop small blobs, closing (hexagon 9), fill holes
     mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_OPEN, SE_HEX_5) > 0
     lab = label(mask)
     keep = []
@@ -90,7 +90,7 @@ def clean(mask, min_area=30):
 
 
 def segment_tumour(enhanced_img, liver_mask):
-    # Sauvola local threshold inside the liver (extension of the Chapter 7 adaptive thresholding, slide 23):
+    # Sauvola local threshold inside the liver
     # T = m x (1 + k x (s / R - 1)); pixels darker than T are tumour
     roi = liver_roi(liver_mask)
     if roi.sum() < 50:
@@ -103,8 +103,8 @@ def segment_tumour(enhanced_img, liver_mask):
 
 
 def laws_features(enhanced_img, mask):
-    # evangeline's own features: Laws texture energy (extension of the Chapter 10-11 texture descriptors);
-    # each Laws mask is a 5x5 convolution mask (Chapter 3). Local brightness removed, mean |response| in the region
+    # evangeline's own features: Laws texture energy
+    # local brightness removed, mean |response| of each mask in the region
     img = enhanced_img.astype(np.float64) - cv2.blur(enhanced_img.astype(np.float64), (15, 15))
     feats = {}
     for name in LAWS_PAIRS:
@@ -127,8 +127,7 @@ def region_features(ct, enhanced_img, mask):
 
 
 def diagnose(ct, enhanced_img, liver_mask, bundle):
-    # cut the liver into ~20 SLIC superpixels (extension of Chapter 7) and let the decision tree
-    # (extension of Chapter 12-13) label each one. Returns the flagged area
+    # decision tree labels each of ~20 SLIC superpixels; returns the flagged area
     model = bundle["model"]
     names = bundle["feature_names"]
     flagged_area = np.zeros(enhanced_img.shape, bool)

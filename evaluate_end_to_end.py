@@ -1,18 +1,6 @@
-"""End-to-end evaluation: raw CT slice -> each member's full pipeline (app/pipeline_<name>.py) -> final tumour mask.
-
-No ground truth is used inside the pipeline: the liver members find their own liver, the tumour members search in
-their default automatic search area (predicted liver or its convex hull). Ground truth is only used for scoring.
-
+"""End-to-end test: raw CT slice -> each member's full pipeline -> final tumour mask (ground truth only for scoring).
 Run from the project folder:   python evaluate_end_to_end.py
-Writes report/end_to_end_per_slice.csv and report/end_to_end_results.csv.
-
-Slice-level scores:
-  - tumour slice detected   = the final mask overlaps the ground-truth tumour
-  - false-alarm slice       = a tumour-free slice where the pipeline flags any tumour
-NOTE: the saved Phase 3 classifiers were refitted on ALL regions of the tumour slices, so on the tumour slices the
-classifier step is in-sample (optimistic). The tumour-free slices (data/slices/<name>_healthy) were never used for
-training or tuning, so their false-alarm rate is a fair estimate.
-"""
+Writes report/end_to_end_per_slice.csv and report/end_to_end_results.csv."""
 import glob
 import importlib
 import sys
@@ -62,7 +50,7 @@ def evaluate(name):
             else:
                 row["GT tumour inside liver / search area"] = np.nan
             row["flagged tumour"] = bool(pred.any())
-            # Chapter 8: connected components = number of predicted tumour blobs
+            # connected components = number of predicted tumour blobs
             row["predicted tumour blobs"] = int(cv2.connectedComponents(pred.astype(np.uint8))[0] - 1)
             row["detected (overlaps GT tumour)"] = bool((pred & gt_tumour).any())
             if gt_tumour.any():

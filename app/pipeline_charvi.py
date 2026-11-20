@@ -18,7 +18,7 @@ PHASE2_METRICS = ("phase2/outputs_charvi/phase2_metrics.csv", "regiongrow")
 PHASE3_METRICS = "phase3/outputs_charvi/phase3_metrics.csv"
 MODEL = "phase3/outputs_charvi/knn_model.joblib"
 
-# Chapter 8: hand-made octagon structuring element (square with cut corners), in 3 sizes
+# hand-made octagon structuring element (square with cut corners), in 3 sizes
 SE_OCT_15 = np.ones((15, 15), np.uint8)
 for r in range(15):
     for c in range(15):
@@ -33,7 +33,7 @@ FAT_LEVEL = 60
 
 
 def anisotropic_diffusion(img, iterations=15, kappa=30, gamma=0.15):
-    # Perona-Malik diffusion (extension of the Chapter 3 smoothing filters): smooths flat areas but stops at edges
+    # Perona-Malik diffusion: smooths flat areas but stops at edges
     I = img.astype(np.float64)
     for _ in range(iterations):
         diffs = [np.roll(I, -1, 0) - I, np.roll(I, 1, 0) - I, np.roll(I, -1, 1) - I, np.roll(I, 1, 1) - I]
@@ -45,7 +45,7 @@ def anisotropic_diffusion(img, iterations=15, kappa=30, gamma=0.15):
 
 
 def region_grow(img, seed, tolerance, allowed=None):
-    # seeded region growing with a running-average brightness tolerance (extension of Chapter 7)
+    # seeded region growing with a running-average brightness tolerance
     h, w = img.shape
     region = np.zeros((h, w), bool)
     region[seed] = True
@@ -67,7 +67,7 @@ def region_grow(img, seed, tolerance, allowed=None):
 
 
 def enhance(windowed_img):
-    # anisotropic diffusion, then CLAHE (adaptive extension of Chapter 2.2 HE)
+    # anisotropic diffusion, then CLAHE
     aniso_img = anisotropic_diffusion(windowed_img)
     clahe = cv2.createCLAHE(2.0, (8, 8))
     return clahe.apply(aniso_img)
@@ -86,7 +86,7 @@ def find_seed(enhanced_img):
 
 
 def add_tumour(enhanced_img, liver_mask):
-    # take in the dark tumour region growing leaves out: tumour-grey pixels inside the closed liver outline
+    # add the dark tumour pixels inside the closed liver outline
     closed = cv2.morphologyEx(liver_mask.astype(np.uint8), cv2.MORPH_CLOSE, SE_OCT_61) > 0
     outline = ndi.binary_fill_holes(closed)
     dark = outline & ~liver_mask & (enhanced_img >= FAT_LEVEL) & (enhanced_img < LIVER_LOW)
@@ -99,7 +99,7 @@ def segment_liver(enhanced_img):
     seed = find_seed(enhanced_img)
     if seed is None:
         return np.zeros(enhanced_img.shape, bool)
-    blurred = cv2.GaussianBlur(enhanced_img, (5, 5), 0)          # Chapter 3: Gaussian smoothing
+    blurred = cv2.GaussianBlur(enhanced_img, (5, 5), 0)   # Gaussian smoothing
     grown = region_grow(blurred, seed, TOLERANCE)
     mask = cv2.morphologyEx(grown.astype(np.uint8), cv2.MORPH_OPEN, SE_OCT_7) > 0
     mask = cv2.morphologyEx(common.keep_liver(mask).astype(np.uint8), cv2.MORPH_CLOSE, SE_OCT_15)
@@ -115,8 +115,7 @@ LIVER_SOURCES = ["ground truth", "predicted liver", "convex hull of predicted li
 
 
 def search_area(ct, gt_liver, source):
-    # where the tumour members look for the tumour: the ground-truth liver, the predicted liver, or the convex hull
-    # of the predicted liver (the hull also covers a dark tumour that bites into the liver edge)
+    # tumour search area: ground-truth liver, predicted liver, or its convex hull
     if source == "ground truth" and gt_liver is not None:
         return gt_liver
     liver_mask = predicted_liver(ct)
@@ -128,7 +127,6 @@ def search_area(ct, gt_liver, source):
 
 def lbp_features(enhanced_img, mask, P=8, R=1):
     # charvi's own features: normalised histogram of uniform LBP codes inside the region
-    # (extension of the Chapter 10-11 texture descriptors, not in the slides)
     codes = local_binary_pattern(enhanced_img, P, R, method="uniform")
     hist = np.bincount(codes[mask].astype(int), minlength=P + 2) / mask.sum()
     feats = {}
@@ -151,7 +149,7 @@ def run(ct, root, gt_liver=None, liver_source="own"):
     windowed_img = common.window(ct, 40, 400)
     enhanced_img = enhance(windowed_img)
     liver_mask = segment_liver(enhanced_img)
-    # tumour candidates: darker than the liver median - 1.5 x std, then k-NN (extension of Chapter 12-13)
+    # tumour candidates: darker than the liver median - 1.5 x std, then k-NN
     candidates = common.dark_spots(enhanced_img, liver_mask, k=1.5)
     tumour_mask, checked = common.classify_regions(ct, enhanced_img, candidates, bundle, features=region_features)
     result = {}

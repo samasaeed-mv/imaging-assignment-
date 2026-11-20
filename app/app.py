@@ -1,10 +1,5 @@
-"""Group prototype: Liver CT -> enhancement -> segmentation -> tumour diagnosis, one pipeline per member.
-Run from the project folder:   streamlit run app/app.py
-
-Input: one CT slice OR a group of slices (saved slices, or uploaded .npy in HU / .png windowed 40/400).
-Output per slice: liver and tumour masks, RED = predicted outline, GREEN = ground-truth outline, drawn on the
-windowed ORIGINAL slice; Dice, IoU and recall per organ. For a group: a per-slice table and slice-level
-accuracy, recall (sensitivity), specificity and F1 of the tumour diagnosis."""
+"""Group prototype: CT slice(s) -> each member's pipeline -> liver and tumour masks with scores.
+Run from the project folder:   streamlit run app/app.py"""
 import glob
 import importlib
 from pathlib import Path
@@ -29,14 +24,13 @@ st.caption("Classical pipeline, one set of algorithms per group member.  RED = p
 
 # ---------------- helpers ----------------
 def png_to_hu(img):
-    # a PNG has no HU values. Assume it was saved with the abdomen window 40/400 (0 = -160 HU, 255 = 240 HU)
-    # and map it back (the inverse of the Chapter 2.2 point operation). Approximate: everything outside
-    # -160..240 HU was clipped when the PNG was made
+    # PNG has no HU: assume window 40/400 (0 = -160 HU, 255 = 240 HU) and map back
+    # approximate: values outside -160..240 HU were clipped
     return img.astype(np.float32) / 255 * 400 - 160
 
 
 def read_upload(file):
-    # uploaded CT slice -> HU array. .npy = raw HU, .png = abdomen-windowed image converted back (approximate)
+    # uploaded CT -> HU array (.npy = raw HU, .png = converted back, approximate)
     if file.name.lower().endswith(".npy"):
         return np.load(file), False
     img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
